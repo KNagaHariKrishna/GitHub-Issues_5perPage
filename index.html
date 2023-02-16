@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitIssue</title>
+  </head>
+  <body>
+    <div id="container">
+      <h1 id="PagNum">Page Number 1</h1>
+      <ol id="ol"></ol>
+      <button id="preLoad">Previous</button>
+      <button id="nextLode">Next</button>
+    </div>
+
+    <script>
+      const issuePage = 5;
+      let currPageNum = 1;
+
+      function GitIssuefetch(pageNumber) {
+        fetch(
+          `https://api.github.com/repositories/1296269/issues?page=${pageNumber}&per_page=${issuePage}`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            const issueList = document.getElementById("ol");
+            issueList.innerHTML = "";
+            data.forEach((issues) => {
+              const issueTitle = issues.title;
+              const issueItem = document.createElement("li");
+              issueItem.textContent = issueTitle;
+              issueList.appendChild(issueItem);
+            });
+            const pageNumberheading = document.getElementById("PagNum");
+            pageNumberheading.innerText = `Page Number ${pageNumber}`;
+          })
+          .catch((e) => console.log(e));
+      }
+      document.addEventListener("DOMContentLoaded", () => {
+        GitIssuefetch(currPageNum);
+        const Nextbtn = document.getElementById("nextLode");
+        const Prevbtn = document.getElementById("preLoad");
+
+        Nextbtn.addEventListener("click", () => {
+          currPageNum++;
+          GitIssuefetch(currPageNum);
+        });
+        Prevbtn.addEventListener("click", () => {
+          if (currPageNum > 1) {
+            currPageNum--;
+            GitIssuefetch(currPageNum);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
